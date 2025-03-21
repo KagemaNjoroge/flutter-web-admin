@@ -9,7 +9,7 @@ import 'package:web_admin/views/screens/dialogs_screen.dart';
 import 'package:web_admin/views/screens/error_screen.dart';
 import 'package:web_admin/views/screens/form_screen.dart';
 import 'package:web_admin/views/screens/general_ui_screen.dart';
-import 'package:web_admin/views/screens/iframe_demo_screen.dart';
+
 import 'package:web_admin/views/screens/login_screen.dart';
 import 'package:web_admin/views/screens/logout_screen.dart';
 import 'package:web_admin/views/screens/my_profile_screen.dart';
@@ -156,13 +156,7 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           );
         },
       ),
-      GoRoute(
-        path: RouteUri.iframe,
-        pageBuilder: (context, state) => NoTransitionPage<void>(
-          key: state.pageKey,
-          child: const IFrameDemoScreen(),
-        ),
-      ),
+   
     ],
     redirect: (context, state) {
       if (unrestrictedRoutes.contains(state.matchedLocation)) {
