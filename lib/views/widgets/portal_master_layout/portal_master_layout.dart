@@ -48,7 +48,9 @@ class PortalMasterLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQueryData = MediaQuery.of(context);
     final themeData = Theme.of(context);
-    final drawer = (mediaQueryData.size.width <= kScreenWidthLg ? _sidebar(context) : null);
+    final drawer = (mediaQueryData.size.width <= kScreenWidthLg
+        ? _sidebar(context)
+        : null);
 
     return Scaffold(
       appBar: AppBar(
@@ -83,6 +85,48 @@ class PortalMasterLayout extends StatelessWidget {
     );
   }
 
+  Widget _changeLanguageButton(BuildContext context) {
+    return PopupMenuButton(
+      splashRadius: 0.0,
+      tooltip: '',
+      position: PopupMenuPosition.under,
+      itemBuilder: (context) {
+        return localeMenuConfigs.map<PopupMenuItem>((e) {
+          return PopupMenuItem(
+            onTap: () async {
+              final provider = context.read<AppPreferencesProvider>();
+
+              await provider.setLocaleAsync(
+                  locale: Locale.fromSubtags(
+                      languageCode: e.languageCode, scriptCode: e.scriptCode));
+            },
+            child: Text(e.name),
+          );
+        }).toList(growable: false);
+      },
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.5),
+        constraints: const BoxConstraints(minWidth: 48.0),
+        child: Row(
+          children: [
+            Icon(
+              Icons.translate_rounded,
+              size: (Theme.of(context).textTheme.labelLarge!.fontSize! + 4.0),
+            ),
+            Visibility(
+              visible: (MediaQuery.of(context).size.width > kScreenWidthMd),
+              child: Padding(
+                padding: const EdgeInsets.only(left: kDefaultPadding * 0.5),
+                child: Text(Lang.of(context).language),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _responsiveBody(BuildContext context) {
     if (MediaQuery.of(context).size.width <= kScreenWidthLg) {
       return body;
@@ -114,7 +158,8 @@ class PortalMasterLayout extends StatelessWidget {
   Widget _toggleThemeButton(BuildContext context) {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
-    final isFullWidthButton = (MediaQuery.of(context).size.width > kScreenWidthMd);
+    final isFullWidthButton =
+        (MediaQuery.of(context).size.width > kScreenWidthMd);
 
     return SizedBox(
       width: (isFullWidthButton ? null : 48.0),
@@ -122,13 +167,16 @@ class PortalMasterLayout extends StatelessWidget {
         onPressed: () async {
           final provider = context.read<AppPreferencesProvider>();
           final currentThemeMode = provider.themeMode;
-          final themeMode = (currentThemeMode != ThemeMode.dark ? ThemeMode.dark : ThemeMode.light);
+          final themeMode = (currentThemeMode != ThemeMode.dark
+              ? ThemeMode.dark
+              : ThemeMode.light);
 
           provider.setThemeModeAsync(themeMode: themeMode);
         },
         style: TextButton.styleFrom(
           foregroundColor: themeData.colorScheme.onPrimary,
-          disabledForegroundColor: themeData.extension<AppColorScheme>()!.primary.withOpacity(0.38),
+          disabledForegroundColor:
+              themeData.extension<AppColorScheme>()!.primary.withOpacity(0.38),
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
         child: Selector<AppPreferencesProvider, ThemeMode>(
@@ -163,46 +211,6 @@ class PortalMasterLayout extends StatelessWidget {
       ),
     );
   }
-
-  Widget _changeLanguageButton(BuildContext context) {
-    return PopupMenuButton(
-      splashRadius: 0.0,
-      tooltip: '',
-      position: PopupMenuPosition.under,
-      itemBuilder: (context) {
-        return localeMenuConfigs.map<PopupMenuItem>((e) {
-          return PopupMenuItem(
-            onTap: () async {
-              final provider = context.read<AppPreferencesProvider>();
-
-              await provider.setLocaleAsync(locale: Locale.fromSubtags(languageCode: e.languageCode, scriptCode: e.scriptCode));
-            },
-            child: Text(e.name),
-          );
-        }).toList(growable: false);
-      },
-      child: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.5),
-        constraints: const BoxConstraints(minWidth: 48.0),
-        child: Row(
-          children: [
-            Icon(
-              Icons.translate_rounded,
-              size: (Theme.of(context).textTheme.labelLarge!.fontSize! + 4.0),
-            ),
-            Visibility(
-              visible: (MediaQuery.of(context).size.width > kScreenWidthMd),
-              child: Padding(
-                padding: const EdgeInsets.only(left: kDefaultPadding * 0.5),
-                child: Text(Lang.of(context).language),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class ResponsiveAppBarTitle extends StatelessWidget {
@@ -229,9 +237,9 @@ class ResponsiveAppBarTitle extends StatelessWidget {
               visible: (mediaQueryData.size.width > kScreenWidthSm),
               child: Container(
                 padding: const EdgeInsets.only(right: kDefaultPadding * 0.7),
-                height: 40.0,
+                height: 100.0,
                 child: Image.asset(
-                  'assets/images/app_logo.png',
+                  'assets/images/new_logo_no_bg.png',
                   fit: BoxFit.contain,
                 ),
               ),
