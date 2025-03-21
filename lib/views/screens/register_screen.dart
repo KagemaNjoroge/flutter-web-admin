@@ -12,6 +12,12 @@ import 'package:web_admin/theme/theme_extensions/app_button_theme.dart';
 import 'package:web_admin/utils/app_focus_helper.dart';
 import 'package:web_admin/views/widgets/public_master_layout/public_master_layout.dart';
 
+class FormData {
+  String username = '';
+  String email = '';
+  String password = '';
+}
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -25,6 +31,200 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formData = FormData();
 
   var _isFormLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final lang = Lang.of(context);
+    final themeData = Theme.of(context);
+
+    return PublicMasterLayout(
+      body: SingleChildScrollView(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            padding: const EdgeInsets.only(top: kDefaultPadding * 5.0),
+            constraints: const BoxConstraints(maxWidth: 400.0),
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              child: Padding(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                      child: Image.asset(
+                        'assets/images/new_logo_no_bg.png',
+                        height: 200.0,
+                      ),
+                    ),
+                    Text(
+                      lang.appTitle,
+                      style: themeData.textTheme.headlineMedium!.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                      child: Text(
+                        lang.registerANewAccount,
+                        style: themeData.textTheme.titleMedium,
+                      ),
+                    ),
+                    FormBuilder(
+                      key: _formKey,
+                      autovalidateMode: AutovalidateMode.disabled,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 1.5),
+                            child: FormBuilderTextField(
+                              name: 'username',
+                              decoration: InputDecoration(
+                                labelText: lang.username,
+                                hintText: lang.username,
+                                helperText:
+                                    '* To test registration fail: admin',
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                              ),
+                              enableSuggestions: false,
+                              validator: FormBuilderValidators.required(),
+                              onSaved: (value) =>
+                                  (_formData.username = value ?? ''),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 1.5),
+                            child: FormBuilderTextField(
+                              name: 'email',
+                              decoration: InputDecoration(
+                                labelText: lang.email,
+                                hintText: lang.email,
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              validator: FormBuilderValidators.required(),
+                              onSaved: (value) =>
+                                  (_formData.email = value ?? ''),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 1.5),
+                            child: FormBuilderTextField(
+                              name: 'password',
+                              decoration: InputDecoration(
+                                labelText: lang.password,
+                                hintText: lang.password,
+                                helperText: lang.passwordHelperText,
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                              ),
+                              enableSuggestions: false,
+                              obscureText: true,
+                              controller: _passwordTextEditingController,
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.minLength(6),
+                                FormBuilderValidators.maxLength(18),
+                              ]),
+                              onSaved: (value) =>
+                                  (_formData.password = value ?? ''),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 2.0),
+                            child: FormBuilderTextField(
+                              name: 'retypePassword',
+                              decoration: InputDecoration(
+                                labelText: lang.retypePassword,
+                                hintText: lang.retypePassword,
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                              ),
+                              enableSuggestions: false,
+                              obscureText: true,
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                (value) {
+                                  if (_formKey.currentState?.fields['password']
+                                          ?.value !=
+                                      value) {
+                                    return lang.passwordNotMatch;
+                                  }
+
+                                  return null;
+                                },
+                              ]),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: kDefaultPadding),
+                            child: SizedBox(
+                              height: 40.0,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: themeData
+                                    .extension<AppButtonTheme>()!
+                                    .primaryElevated,
+                                onPressed: (_isFormLoading
+                                    ? null
+                                    : () => _doRegisterAsync(
+                                          userDataProvider:
+                                              context.read<UserDataProvider>(),
+                                          onSuccess: (message) =>
+                                              _onRegisterSuccess(
+                                                  context, message),
+                                          onError: (message) =>
+                                              _onRegisterError(
+                                                  context, message),
+                                        )),
+                                child: Text(lang.register),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 40.0,
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              style: themeData
+                                  .extension<AppButtonTheme>()!
+                                  .secondaryOutlined,
+                              onPressed: () =>
+                                  GoRouter.of(context).go(RouteUri.login),
+                              child: Text(lang.backToLogin),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _passwordTextEditingController.dispose();
+
+    super.dispose();
+  }
 
   Future<void> _doRegisterAsync({
     required UserDataProvider userDataProvider,
@@ -56,19 +256,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  void _onRegisterSuccess(BuildContext context, String message) {
-    final dialog = AwesomeDialog(
-      context: context,
-      dialogType: DialogType.success,
-      desc: message,
-      width: kDialogWidth,
-      btnOkText: Lang.of(context).loginNow,
-      btnOkOnPress: () => GoRouter.of(context).go(RouteUri.home),
-    );
-
-    dialog.show();
-  }
-
   void _onRegisterError(BuildContext context, String message) {
     final dialog = AwesomeDialog(
       context: context,
@@ -82,177 +269,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     dialog.show();
   }
 
-  @override
-  void dispose() {
-    _passwordTextEditingController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final lang = Lang.of(context);
-    final themeData = Theme.of(context);
-
-    return PublicMasterLayout(
-      body: SingleChildScrollView(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            padding: const EdgeInsets.only(top: kDefaultPadding * 5.0),
-            constraints: const BoxConstraints(maxWidth: 400.0),
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: Padding(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: kDefaultPadding),
-                      child: Image.asset(
-                        'assets/images/app_logo.png',
-                        height: 80.0,
-                      ),
-                    ),
-                    Text(
-                      lang.appTitle,
-                      style: themeData.textTheme.headlineMedium!.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                      child: Text(
-                        lang.registerANewAccount,
-                        style: themeData.textTheme.titleMedium,
-                      ),
-                    ),
-                    FormBuilder(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.disabled,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                            child: FormBuilderTextField(
-                              name: 'username',
-                              decoration: InputDecoration(
-                                labelText: lang.username,
-                                hintText: lang.username,
-                                helperText: '* To test registration fail: admin',
-                                border: const OutlineInputBorder(),
-                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                              ),
-                              enableSuggestions: false,
-                              validator: FormBuilderValidators.required(),
-                              onSaved: (value) => (_formData.username = value ?? ''),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                            child: FormBuilderTextField(
-                              name: 'email',
-                              decoration: InputDecoration(
-                                labelText: lang.email,
-                                hintText: lang.email,
-                                border: const OutlineInputBorder(),
-                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                              ),
-                              keyboardType: TextInputType.emailAddress,
-                              validator: FormBuilderValidators.required(),
-                              onSaved: (value) => (_formData.email = value ?? ''),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                            child: FormBuilderTextField(
-                              name: 'password',
-                              decoration: InputDecoration(
-                                labelText: lang.password,
-                                hintText: lang.password,
-                                helperText: lang.passwordHelperText,
-                                border: const OutlineInputBorder(),
-                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                              ),
-                              enableSuggestions: false,
-                              obscureText: true,
-                              controller: _passwordTextEditingController,
-                              validator: FormBuilderValidators.compose([
-                                FormBuilderValidators.required(),
-                                FormBuilderValidators.minLength(6),
-                                FormBuilderValidators.maxLength(18),
-                              ]),
-                              onSaved: (value) => (_formData.password = value ?? ''),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                            child: FormBuilderTextField(
-                              name: 'retypePassword',
-                              decoration: InputDecoration(
-                                labelText: lang.retypePassword,
-                                hintText: lang.retypePassword,
-                                border: const OutlineInputBorder(),
-                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                              ),
-                              enableSuggestions: false,
-                              obscureText: true,
-                              validator: FormBuilderValidators.compose([
-                                FormBuilderValidators.required(),
-                                (value) {
-                                  if (_formKey.currentState?.fields['password']?.value != value) {
-                                    return lang.passwordNotMatch;
-                                  }
-
-                                  return null;
-                                },
-                              ]),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding),
-                            child: SizedBox(
-                              height: 40.0,
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: themeData.extension<AppButtonTheme>()!.primaryElevated,
-                                onPressed: (_isFormLoading
-                                    ? null
-                                    : () => _doRegisterAsync(
-                                          userDataProvider: context.read<UserDataProvider>(),
-                                          onSuccess: (message) => _onRegisterSuccess(context, message),
-                                          onError: (message) => _onRegisterError(context, message),
-                                        )),
-                                child: Text(lang.register),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 40.0,
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              style: themeData.extension<AppButtonTheme>()!.secondaryOutlined,
-                              onPressed: () => GoRouter.of(context).go(RouteUri.login),
-                              child: Text(lang.backToLogin),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+  void _onRegisterSuccess(BuildContext context, String message) {
+    final dialog = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.success,
+      desc: message,
+      width: kDialogWidth,
+      btnOkText: Lang.of(context).loginNow,
+      btnOkOnPress: () => GoRouter.of(context).go(RouteUri.home),
     );
-  }
-}
 
-class FormData {
-  String username = '';
-  String email = '';
-  String password = '';
+    dialog.show();
+  }
 }
