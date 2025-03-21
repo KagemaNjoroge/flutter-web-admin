@@ -4,6 +4,23 @@ import 'package:web_admin/generated/l10n.dart';
 import 'package:web_admin/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:web_admin/views/widgets/portal_master_layout/sidebar.dart';
 
+const localeMenuConfigs = [
+  LocaleMenuConfig(
+    languageCode: 'en',
+    name: 'English',
+  ),
+  LocaleMenuConfig(
+    languageCode: 'zh',
+    scriptCode: 'Hans',
+    name: '中文 (简体)',
+  ),
+  LocaleMenuConfig(
+    languageCode: 'zh',
+    scriptCode: 'Hant',
+    name: '中文 (繁體)',
+  ),
+];
+
 final sidebarMenuConfigs = [
   SidebarMenuConfig(
     uri: RouteUri.dashboard,
@@ -14,6 +31,11 @@ final sidebarMenuConfigs = [
     uri: RouteUri.form,
     icon: Icons.edit_note_rounded,
     title: (context) => Lang.of(context).forms(1),
+  ),
+  SidebarMenuConfig(
+    uri: RouteUri.users,
+    icon: Icons.people_rounded,
+    title: (context) => 'Users',
   ),
   SidebarMenuConfig(
     uri: '',
@@ -39,11 +61,6 @@ final sidebarMenuConfigs = [
         uri: RouteUri.buttons,
         icon: Icons.circle_outlined,
         title: (context) => Lang.of(context).buttons(2),
-      ),
-      SidebarChildMenuConfig(
-        uri: RouteUri.dialogs,
-        icon: Icons.circle_outlined,
-        title: (context) => Lang.of(context).dialogs(2),
       ),
     ],
   ),
@@ -73,27 +90,5 @@ final sidebarMenuConfigs = [
         title: (context) => 'CRUD',
       ),
     ],
-  ),
-  SidebarMenuConfig(
-    uri: RouteUri.iframe,
-    icon: Icons.laptop_windows_rounded,
-    title: (context) => Lang.of(context).iframeDemo,
-  ),
-];
-
-const localeMenuConfigs = [
-  LocaleMenuConfig(
-    languageCode: 'en',
-    name: 'English',
-  ),
-  LocaleMenuConfig(
-    languageCode: 'zh',
-    scriptCode: 'Hans',
-    name: '中文 (简体)',
-  ),
-  LocaleMenuConfig(
-    languageCode: 'zh',
-    scriptCode: 'Hant',
-    name: '中文 (繁體)',
   ),
 ];
