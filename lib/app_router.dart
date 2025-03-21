@@ -9,42 +9,23 @@ import 'package:web_admin/views/screens/dialogs_screen.dart';
 import 'package:web_admin/views/screens/error_screen.dart';
 import 'package:web_admin/views/screens/form_screen.dart';
 import 'package:web_admin/views/screens/general_ui_screen.dart';
-
 import 'package:web_admin/views/screens/login_screen.dart';
 import 'package:web_admin/views/screens/logout_screen.dart';
 import 'package:web_admin/views/screens/my_profile_screen.dart';
 import 'package:web_admin/views/screens/register_screen.dart';
 import 'package:web_admin/views/screens/text_screen.dart';
+import 'package:web_admin/views/screens/users_screen.dart';
 
-class RouteUri {
-  static const String home = '/';
-  static const String dashboard = '/dashboard';
-  static const String myProfile = '/my-profile';
-  static const String logout = '/logout';
-  static const String form = '/form';
-  static const String generalUi = '/general-ui';
-  static const String colors = '/colors';
-  static const String text = '/text';
-  static const String buttons = '/buttons';
-  static const String dialogs = '/dialogs';
-  static const String error404 = '/404';
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String crud = '/crud';
-  static const String crudDetail = '/crud-detail';
-  static const String iframe = '/iframe';
-}
+const List<String> publicRoutes = [
+  // RouteUri.login, // Enable this line for actual authentication flow.
+  // RouteUri.register, // Enable this line for actual authentication flow.
+];
 
 const List<String> unrestrictedRoutes = [
   RouteUri.error404,
   RouteUri.logout,
   RouteUri.login, // Remove this line for actual authentication flow.
   RouteUri.register, // Remove this line for actual authentication flow.
-];
-
-const List<String> publicRoutes = [
-  // RouteUri.login, // Enable this line for actual authentication flow.
-  // RouteUri.register, // Enable this line for actual authentication flow.
 ];
 
 GoRouter appRouter(UserDataProvider userDataProvider) {
@@ -55,6 +36,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
       child: const ErrorScreen(),
     ),
     routes: [
+      GoRoute(
+        path: RouteUri.users,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const UsersScreen(),
+        ),
+      ),
       GoRoute(
         path: RouteUri.home,
         redirect: (context, state) => RouteUri.dashboard,
@@ -156,7 +144,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           );
         },
       ),
-   
+      GoRoute(
+        path: RouteUri.dialogs,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const DialogsScreen(),
+        ),
+      ),
     ],
     redirect: (context, state) {
       if (unrestrictedRoutes.contains(state.matchedLocation)) {
@@ -178,4 +172,23 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
       return null;
     },
   );
+}
+
+class RouteUri {
+  static const String home = '/';
+  static const String dashboard = '/dashboard';
+  static const String myProfile = '/my-profile';
+  static const String logout = '/logout';
+  static const String form = '/form';
+  static const String generalUi = '/general-ui';
+  static const String colors = '/colors';
+  static const String text = '/text';
+  static const String buttons = '/buttons';
+  static const String dialogs = '/dialogs';
+  static const String error404 = '/404';
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String crud = '/crud';
+  static const String crudDetail = '/crud-detail';
+  static const String users = '/users';
 }
