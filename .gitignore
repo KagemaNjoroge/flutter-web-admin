@@ -11,6 +11,11 @@
 migrate_working_dir/
 .fvm/
 .fvmrc
+linux/
+windows/
+android/
+ios/
+macos/
 
 # IntelliJ related
 *.iml
