@@ -55,6 +55,8 @@ class PortalMasterLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: (drawer != null),
+        elevation: 0.0,
+        
         title: ResponsiveAppBarTitle(
           onAppBarTitlePressed: () => GoRouter.of(context).go(RouteUri.home),
         ),
