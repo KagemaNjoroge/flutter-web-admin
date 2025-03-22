@@ -6,6 +6,7 @@ import 'package:web_admin/generated/l10n.dart';
 import 'package:web_admin/master_layout_config.dart';
 import 'package:web_admin/providers/user_data_provider.dart';
 import 'package:web_admin/theme/theme_extensions/app_sidebar_theme.dart';
+import 'package:web_admin/theme/themes.dart';
 
 class SidebarMenuConfig {
   final String uri;
@@ -71,6 +72,7 @@ class _SidebarState extends State<Sidebar> {
     final sidebarTheme = themeData.extension<AppSidebarTheme>()!;
 
     return Drawer(
+      backgroundColor: kPrimaryColor,
       child: Column(
         children: [
           Visibility(
