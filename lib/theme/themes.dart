@@ -7,7 +7,7 @@ import 'package:web_admin/theme/theme_extensions/app_sidebar_theme.dart';
 
 const Color kErrorColor = Color(0xFFDC3545);
 const Color kInfoColor = Color(0xFF17A2B8);
-const Color kPrimaryColor = Color(0xFF347BDE);
+const Color kPrimaryColor = Color(0xFF212c42);
 const Color kScreenBackgroundColor = Color(0xFFF4F6F9);
 const Color kSecondaryColor = Color(0xFF6C757D);
 const Color kSuccessColor = Color(0xFF08A158);
